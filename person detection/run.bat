@@ -1,2 +1,2 @@
-python yolo_opencv.py
+python person_count.py
 pause

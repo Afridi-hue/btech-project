@@ -15,7 +15,7 @@ yolo_weights="yolo_v3/yolov3.weights"
 yolo_config="yolo_v3/yolov3.cfg"
 img_folder="person_images"
 
-global counter
+global counter  # Counter for counting no of person in the image
 
 
 
@@ -108,8 +108,9 @@ for ab in image_data:
             # print("person found")
             counter+=1
             draw_prediction(image, class_ids[i], confidences[i], round(x), round(y), round(x+w), round(y+h))
-    #cv2.putText(image, str(counter), (10,10), cv2.FONT_HERSHEY_SIMPLEX, 1, "red", 2)
-    cv2.putText(image,str(counter),(100,100),cv2.FONT_HERSHEY_COMPLEX,5,(255,0,0),3)
+
+    cv2.putText(image,str(counter),(100,100),cv2.FONT_HERSHEY_COMPLEX,3,(255,0,0),3) # Print the people's count in the image
+    print("Total no of person identified: {}".format(counter))
     cv2.imshow("object detection", image)
     cv2.waitKey()
         
