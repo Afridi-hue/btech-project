@@ -5,7 +5,7 @@
 ############################################
 # pip install tensorflow==1.14
 
-import cv2,os
+import cv2,os,time
 import argparse
 import numpy as np
 
@@ -112,7 +112,10 @@ for ab in image_data:
 
     cv2.putText(image,str(counter),(100,100),cv2.FONT_HERSHEY_COMPLEX,3,(255,0,0),3) # Print the people's count in the image
     print("Total no of person identified: {}".format(counter))
+    cv2.namedWindow('object detection',cv2.WINDOW_NORMAL)
+    cv2.resizeWindow('object detection', 1200, 600)
     cv2.imshow("object detection", image)
-    cv2.waitKey()
+    cv2.waitKey(1)
+    time.sleep(0)
     cv2.imwrite("identified_images\\{}".format(ab), image)
     cv2.destroyAllWindows()
