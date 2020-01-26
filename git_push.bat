@@ -1,4 +1,6 @@
+python check_empty_folder.py
 git add *
-git commit -m "updated now"
+set /p message="Message to commit: "
+git commit -m "%message%"
 git push
 pause
