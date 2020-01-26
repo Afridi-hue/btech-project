@@ -11,8 +11,8 @@ import numpy as np
 
 
 yolo_class="../yolo_v3/yolov3.txt"
-yolo_weights="../yolo_v3/yolov3.weights"
-yolo_config="../yolo_v3/yolov3.cfg"
+yolo_weights="../yolo_v3/YOLOv3-320.weights"
+yolo_config="../yolo_v3/YOLOv3-320.cfg"
 img_folder="person_images"
 
 global counter  # Counter for counting no of person in the image
@@ -115,7 +115,7 @@ for ab in image_data:
     cv2.namedWindow('object detection',cv2.WINDOW_NORMAL)
     cv2.resizeWindow('object detection', 1200, 600)
     cv2.imshow("object detection", image)
-    cv2.waitKey(1)
-    time.sleep(0)
+    cv2.waitKey()
+    # time.sleep(0)
     cv2.imwrite("identified_images\\{}".format(ab), image)
     cv2.destroyAllWindows()

@@ -21,6 +21,46 @@ int BCD[10][4] ={
 
 //void clear_data(); //function for clearing the screen.
 
+
+
+
+// Zebra crossing code starts
+
+int em_veh_pin=2;
+int 
+void left_indication(int);
+void right_indication(int);
+void open_gate_l(int);
+void close_gate_1(int);
+void open_gate_r(int);
+void close_gate_(int);
+void setup()
+{
+
+}
+
+void loop()
+{
+    
+}
+// Zebra crossing code ends
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void calculateLeft(int); //functions for calculating the left of score board
 void calculateRight(int);//functions for calculating the right of score board
 void left_data_write(int,int);   //functions for writing left and right segment
