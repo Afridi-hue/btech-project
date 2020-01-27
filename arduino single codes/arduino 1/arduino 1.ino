@@ -1,9 +1,10 @@
-//4 segment connection
-int la[4] = {17,14,15,16}; // left first
-int lb[4] = {17,14,15,16}; // left second
-int ra[4] = {17,14,15,16}; // right first
-int rb[4] = {17,14,15,16}; // right first
+// 7 segment pins
+int l_seg[4] = {17,14,15,16}; // Adding left segment pins
+int r_seg[4] = {17,14,15,16}; // Adding right segment pins
+int em_pin=2; // pin for activating the emergency case
+int ped_pin=3 // pin for activating the pedestrain crossing
 
+// converting the number to binary
 int BCD[10][4] ={
 {0,0,0,0},
 {0,0,0,1},
@@ -15,6 +16,22 @@ int BCD[10][4] ={
 {0,1,1,1},
 {1,0,0,0},
 {1,0,0,1}}; //BCD code
+
+void setup()
+{
+ serial.begin(9600) ; 
+}
+void loop()
+{
+ if(Serial.available())
+    {         //From RPi to Arduino
+    data = r * (Serial.read() - '0');  //conveting the value of chars to integer
+    Serial.println(r);
+    }
+}
+
+
+
 
 
  
