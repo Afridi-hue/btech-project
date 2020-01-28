@@ -1,10 +1,15 @@
 // 7 segment pins
-int l_seg[4] = {17,14,15,16}; // Adding left segment pins
-int r_seg[4] = {17,14,15,16}; // Adding right segment pins
+int l_seg[4] = {2,3,4,5}; // Adding left segment pins
+int r_seg[4] = {6,7,8,9}; // Adding right segment pins
+
+// External connections
 int em_pin=2; // pin for activating the emergency case
 int ped_pin=3 // pin for activating the pedestrain crossing
+int servo1_in=10; // Pin to connect the inner servo
+int servo1_out=11;  // Pin to connect the outer servo
+int gate1=12;   // Pin to connect the gate pin
 
-// converting the number to binary
+// Binary value for 0 to 9
 int BCD[10][4] ={
 {0,0,0,0},
 {0,0,0,1},
@@ -17,16 +22,28 @@ int BCD[10][4] ={
 {1,0,0,0},
 {1,0,0,1}}; //BCD code
 
+
+// Functions
+void emergency_case();
+void pedestrain_case();
+void vehicle_case();
+
 void setup()
 {
- serial.begin(9600) ; 
+ serial.begin(9600) ;
+ for(int i=0;i<4;i++)
+    {
+    pinMode(l_seg[i],OUTPUT);
+    pinMode(r_seg[i],OUTPUT);
+    } 
 }
 void loop()
 {
  if(Serial.available())
-    {         //From RPi to Arduino
-    data = r * (Serial.read() - '0');  //conveting the value of chars to integer
-    Serial.println(r);
+    {         
+    // Reading data from the pi
+    data = Serial.read();
+    Serial.println(data); // Printing the data
     }
 }
 
@@ -35,9 +52,6 @@ void loop()
 
 
  
-
-//void clear_data(); //function for clearing the screen.
-
 
 
 
@@ -83,24 +97,6 @@ void calculateRight(int);//functions for calculating the right of score board
 void left_data_write(int,int);   //functions for writing left and right segment
 void right_data_write(int,int);
 
-int left_up_pin=2; //button pin for increment the left score
-int left_down_pin=3; //button pin for decrement the left score
-int right_up_pin=4; //button pin for increment the right score
-int right_down_pin=5; //button pin for decrement the right score
-
-
-int left_read_down=0; //variable to read the state of the left down button
-int left_read_up=0;  //variable to read the state of the left up button
-int right_read_down=0; //variable to read the state of the right down button
-int right_read_up=0;  //variable to read the state of the right up button
-
-int left_score=0; //variable to store the actual score
-int la_score=0; //variable to store the first digit of score
-int lb_score=0;  //varible to store the second digit of score
-
-int right_score=0; //variable to store the actual score
-int ra_score=0; //variable to store the first digit of score
-int rb_score=0;  //varible to store the second digit of score
 
 
 void setup()
