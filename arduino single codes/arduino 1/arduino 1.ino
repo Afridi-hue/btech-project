@@ -1,14 +1,38 @@
-// 7 segment pins
+//NOTE
+/*
+pedestrain and vehicle led should be connected using the inverting IC
+>>>>Code for reading data from the pinMode
+    if(Serial.available())
+    {         
+    // Reading data from the pi
+    data = Serial.read();
+    Serial.println(data); // Printing the data
+    }
+*/
+
+// Adding the external libraries
+#include <Servo.h>
+
+// 7 segment pins 
 int l_seg[4] = {2,3,4,5}; // Adding left segment pins
 int r_seg[4] = {6,7,8,9}; // Adding right segment pins
 
 // External connections
-int em_pin=2; // pin for activating the emergency case
-int ped_pin=3 // pin for activating the pedestrain crossing
-int in_servo=10; // Pin to connect the inner servo
-int out_servo=11;  // Pin to connect the outer servo
-int gate1=12;   // Pin to connect the gate pin
+int em_pin=2; // Pin for activating the emergency case
+int ped_pin=3 // Pin for activating the pedestrain crossing
+int em_state,ped_state; // Variable for storing the state of the em and ped
 int buzzer=13; // Pin to connect the buzzer
+int vehicle_led=A0;   // Pin to connect the vehicle led
+int ped_led=A1; // Pin to connect the pedestrain led
+// Servo objects
+Servo in_servo;
+Servo out_servo;
+Servo gate_servo;
+// Servo pins
+int in_servo_pin=10; // Pin to connect the inner servo
+int out_servo_pin=11;  // Pin to connect the outer servo
+int gate_servo_pin=12;   // Pin to connect the gate servo
+
 
 // Binary value for 0 to 9
 int BCD[10][4] ={
@@ -32,28 +56,44 @@ void vehicle_case();
 void setup()
 {
  serial.begin(9600) ;
+ // Attaching the servo
+ in_servo.attach(in_servo_pin);
+ out_servo.attach(out_servo_pin);
+ gate_servo.attach(gate_servo_pin);
+
  for(int i=0;i<4;i++)
     {
     pinMode(l_seg[i],OUTPUT);
     pinMode(r_seg[i],OUTPUT);
     } 
-    pinMode(in_servo,OUTPUT);
-    pinMode(out_servo,OUTPUT);
-    pinMode(gate1,OUTPUT);
     pinMode(buzzer,OUTPUT);
-    pinMode(em_pin,INPUT);
-    pinMode(ped_pin,INPUT);
+    pinMode(ped_led,OUTPUT);
+    pinMode(vehicle_led,OUTPUT);
+    pinMode(em_pin,INPUT_PULLUP);
+    pinMode(ped_pin,INPUT_PULLUP);
 
 }
 void loop()
 {
- if(Serial.available())
-    {         
-    // Reading data from the pi
-    data = Serial.read();
-    Serial.println(data); // Printing the data
-    }
-}
+ em_sate=digitalRead(em_pin);
+ ped_sate=digitalRead(ped_pin);
+ delay(300);
+ Serial.println(em_state);
+ Serial.println(ped_state);
+ if (em_state==1)
+ {
+     emergency_case();
+ }
+ else if (ped_state==1)
+ {
+     pedestrain_case();
+ }
+ else
+ {
+     vehicle_case();
+ }
+ 
+ }
 
 
 
@@ -61,10 +101,14 @@ void loop()
 void emergency_case()
 {
     digitalWrite(buzzer,1);
+    out_servo.write(0);
+ 
     // closing the outer gate
     // timer starts for crossing
     //second gate close
+    in_servo.write(0);
     //opening the main barrier
+    gate_servo.write(90);
 
 }
 void pedestrain_case()
