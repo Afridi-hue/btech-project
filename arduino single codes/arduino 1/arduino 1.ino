@@ -5,9 +5,10 @@ int r_seg[4] = {6,7,8,9}; // Adding right segment pins
 // External connections
 int em_pin=2; // pin for activating the emergency case
 int ped_pin=3 // pin for activating the pedestrain crossing
-int servo1_in=10; // Pin to connect the inner servo
-int servo1_out=11;  // Pin to connect the outer servo
+int in_servo=10; // Pin to connect the inner servo
+int out_servo=11;  // Pin to connect the outer servo
 int gate1=12;   // Pin to connect the gate pin
+int buzzer=13; // Pin to connect the buzzer
 
 // Binary value for 0 to 9
 int BCD[10][4] ={
@@ -36,6 +37,13 @@ void setup()
     pinMode(l_seg[i],OUTPUT);
     pinMode(r_seg[i],OUTPUT);
     } 
+    pinMode(in_servo,OUTPUT);
+    pinMode(out_servo,OUTPUT);
+    pinMode(gate1,OUTPUT);
+    pinMode(buzzer,OUTPUT);
+    pinMode(em_pin,INPUT);
+    pinMode(ped_pin,INPUT);
+
 }
 void loop()
 {
@@ -45,6 +53,34 @@ void loop()
     data = Serial.read();
     Serial.println(data); // Printing the data
     }
+}
+
+
+
+
+void emergency_case()
+{
+    digitalWrite(buzzer,1);
+    // closing the outer gate
+    // timer starts for crossing
+    //second gate close
+    //opening the main barrier
+
+}
+void pedestrain_case()
+{
+    // main gate close
+// other gates open
+// traffic light red
+//activates the timer
+
+}
+void vehicle_case()
+{
+    //main barrier open
+    //other gates close
+    //signal green time
+
 }
 
 
