@@ -1,1 +1,73 @@
-fsdaf
+int l_segment[4] = {2,3,4,5}; // Adding left segment pins
+int r_segment[4] = {6,7,8,9}; // Adding right segment pins
+int number,l_seg,r_seg;
+void calculate(int);
+void data_write(int,int);
+
+
+// Binary value for 0 to 9
+int BCD[10][4] ={
+{0,0,0,0},
+{0,0,0,1},
+{0,0,1,0},
+{0,0,1,1},
+{0,1,0,0},
+{0,1,0,1},
+{0,1,1,0},
+{0,1,1,1},
+{1,0,0,0},
+{1,0,0,1}}; //BCD code
+
+
+void setup()
+{
+ serial.begin(9600) ;
+ for(int i=0;i<4;i++)
+    {
+    pinMode(l_segment[i],OUTPUT);
+    pinMode(r_segment[i],OUTPUT);
+    }
+}
+
+
+void loop()
+{
+    for(int i;i<99;i++)
+    {
+        number=i;
+        calculate(number);
+        delay(1000);
+    }
+}
+
+void calculate(int number)
+{
+
+    if (number<10)
+    {
+        l_seg=number;
+        r_seg=0;
+    }
+    else
+    {
+        l_seg=number % 10;
+        r_seg=number/10;
+    }
+    data_write(l_seg,r_seg);
+
+}
+void data_write(int l_seg,int r_seg)
+{
+
+
+     for (int j=0; j < 4; j++) 
+    {
+        digitalWrite(l_segment[j], BCD[left+1][j]);
+    }
+ 
+    for (int j=0; j < 4; j++) 
+    {
+        digitalWrite(r_segment[j], BCD[right+1][j]);
+    }
+  
+}
