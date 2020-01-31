@@ -33,7 +33,7 @@ void setup()
 
 void loop()
 {
-    for(int i=0;i<99;i++)
+    for(int i=9;i>=0;i--)
     {
         number=i;
         Serial.println(number);
@@ -52,8 +52,9 @@ void calculate(int number)
     }
     else
     {
+      l_seg=number/10;
         r_seg=number % 10;
-        l_seg=number/10;
+        
     }
     Serial.println(l_seg);
     Serial.println(r_seg);
