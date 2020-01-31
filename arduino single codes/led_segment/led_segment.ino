@@ -1,6 +1,7 @@
 int l_segment[4] = {2,3,4,5}; // Adding left segment pins
 int r_segment[4] = {6,7,8,9}; // Adding right segment pins
 int number,l_seg,r_seg;
+
 void calculate(int);
 void data_write(int,int);
 
@@ -46,13 +47,13 @@ void calculate(int number)
 
     if (number<10)
     {
-        l_seg=number;
-        r_seg=0;
+        r_seg=number;
+        l_seg=0;
     }
     else
     {
-        l_seg=number % 10;
-        r_seg=number/10;
+        r_seg=number % 10;
+        l_seg=number/10;
     }
     Serial.println(l_seg);
     Serial.println(r_seg);
