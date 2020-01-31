@@ -21,7 +21,7 @@ int BCD[10][4] ={
 
 void setup()
 {
- serial.begin(9600) ;
+ Serial.begin(9600) ;
  for(int i=0;i<4;i++)
     {
     pinMode(l_segment[i],OUTPUT);
@@ -35,6 +35,7 @@ void loop()
     for(int i;i<99;i++)
     {
         number=i;
+        Serial.println(number);
         calculate(number);
         delay(1000);
     }
@@ -53,6 +54,8 @@ void calculate(int number)
         l_seg=number % 10;
         r_seg=number/10;
     }
+    Serial.println(l_seg);
+    Serial.println(r_seg);
     data_write(l_seg,r_seg);
 
 }
@@ -62,12 +65,12 @@ void data_write(int l_seg,int r_seg)
 
      for (int j=0; j < 4; j++) 
     {
-        digitalWrite(l_segment[j], BCD[left+1][j]);
+        digitalWrite(l_segment[j], BCD[l_seg+1][j]);
     }
  
     for (int j=0; j < 4; j++) 
     {
-        digitalWrite(r_segment[j], BCD[right+1][j]);
+        digitalWrite(r_segment[j], BCD[r_seg+1][j]);
     }
   
 }
