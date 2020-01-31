@@ -2,8 +2,8 @@ int l_segment[4] = {2,3,4,5}; // Adding left segment pins
 int r_segment[4] = {6,7,8,9}; // Adding right segment pins
 int ped_segment[4] = {10,11,12,13}; // pedestarin pins
 int number,l_seg,r_seg;
-int veh_led_green=A0;
-int ped_led_red=A1;
+int veh_led_green=A2;
+int ped_led_red=A3;
 
 void calculate_veh(int);
 void data_write_veh(int,int);
