@@ -32,7 +32,7 @@ void setup()
 
 void loop()
 {
-    for(int i;i<99;i++)
+    for(int i=0;i<99;i++)
     {
         number=i;
         Serial.println(number);
@@ -65,12 +65,12 @@ void data_write(int l_seg,int r_seg)
 
      for (int j=0; j < 4; j++) 
     {
-        digitalWrite(l_segment[j], BCD[l_seg+1][j]);
+        digitalWrite(l_segment[j], BCD[l_seg][j]);
     }
  
     for (int j=0; j < 4; j++) 
     {
-        digitalWrite(r_segment[j], BCD[r_seg+1][j]);
+        digitalWrite(r_segment[j], BCD[r_seg][j]);
     }
   
 }
