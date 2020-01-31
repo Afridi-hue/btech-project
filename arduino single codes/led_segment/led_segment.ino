@@ -33,7 +33,7 @@ void setup()
 
 void loop()
 {
-    for(int i=9;i>=0;i--)
+    for(int i=60;i>=0;i--)
     {
         number=i;
         Serial.println(number);

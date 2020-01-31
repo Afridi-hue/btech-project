@@ -10,12 +10,17 @@ pedestrain and vehicle led should be connected using the inverting IC
     }
 */
 
-// Adding the external libraries0
+// Adding the external libraries
 #include <Servo.h>
 
 // 7 segment pins 
-int l_seg[4] = {2,3,4,5}; // Adding left segment pins
-int r_seg[4] = {6,7,8,9}; // Adding right segment pins
+int l_segment[4] = {2,3,4,5}; // Adding left segment pins
+int r_segment[4] = {6,7,8,9}; // Adding right segment pins
+
+// Declaring functions
+void calculate(int);
+void data_write(int,int);
+int number,l_seg,r_seg;
 
 // External connections
 int em_pin=10; // Pin for activating the emergency case
@@ -65,8 +70,8 @@ void setup()
 
  for(int i=0;i<4;i++)
     {
-    pinMode(l_seg[i],OUTPUT);
-    pinMode(r_seg[i],OUTPUT);
+    pinMode(l_segment[i],OUTPUT);
+    pinMode(r_segment[i],OUTPUT);
     } 
     pinMode(buzzer,OUTPUT);
     pinMode(ped_led_green,OUTPUT);
