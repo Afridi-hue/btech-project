@@ -11,8 +11,8 @@ import numpy as np
 
 
 yolo_class="../yolo_v3/yolov3.txt"
-yolo_weights="../yolo_v3/YOLOv3-320.weights"
-yolo_config="../yolo_v3/YOLOv3-320.cfg"
+yolo_weights="../yolo_v3/yolov3.weights"
+yolo_config="../yolo_v3/yolov3.cfg"
 img_folder="person_images"
 
 global counter  # Counter for counting no of person in the image
