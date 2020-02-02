@@ -33,9 +33,8 @@ void setup()
 
 void loop()
 {
-    for(int i=15;i>=0;i--)
+    for(number=60;number>=0;number--)
     {
-        number=i;
         Serial.println(number);
         calculate(number);
         delay(1000);
@@ -47,8 +46,9 @@ void calculate(int number)
 
     if (number<10)
     {
-        r_seg=number;
         l_seg=0;
+        r_seg=number;
+        
     }
     else
     {

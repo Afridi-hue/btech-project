@@ -43,9 +43,8 @@ void loop()
 {
     analogWrite(veh_led_green,255);
     analogWrite(ped_led_red,0);
-    for(int i=15;i>=0;i--)
+    for(number=15;number>=0;number--)
     {
-        number=i;
         Serial.println(number);
         calculate_veh(number);
         delay(1000);
@@ -53,9 +52,8 @@ void loop()
 
     analogWrite(veh_led_green,0);
     analogWrite(ped_led_red,255);
-    for(int i=9;i>=0;i--)
+    for(number=9;number>=0;number--)
     {
-        number=i;
         Serial.println(number);
         calculate_ped(number);
         delay(1000);
@@ -67,8 +65,9 @@ void calculate_veh(int number)
 
     if (number<10)
     {
-        r_seg=number;
         l_seg=0;
+        r_seg=number;
+        
     }
     else
     {
@@ -86,8 +85,9 @@ void calculate_ped(int number)
 
     if (number<10)
     {
-        r_seg=number;
         l_seg=0;
+        r_seg=number;
+        
     }
     else
     {
