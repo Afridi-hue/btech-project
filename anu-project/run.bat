@@ -1,0 +1,2 @@
+python ak.py
+pause
