@@ -28,18 +28,22 @@ Using MAX7219
 int number,l_seg,r_seg;
 int ped_delay=10;
 int veh_delay=30;
-int em_delay=60;
+int em_delay=15;
 
 // functions
 void ped_cross();
 void em_cross();
-void ped_cross();
-void calculate_em(int);
-void data_write_em(int,int);
-void calculate_veh(int);
-void data_write_veh(int,int);
-void calculate_ped(int);
-void data_write_ped(int);
+void veh_cross();
+
+// Function for calculate left and right value of a number
+void calculate_left_right(int);
+
+// turning the indicator light and buzzer
+// veh_g,veh_r,ped_g,ped_r,buzzer
+void indicator_and_buzzer(int,int,int,int,int);
+
+// writing to the 4 seven segment
+void data_write_display(int,int,int,int,int);
 
 // Servo objects
 Servo inner_servo,outer_servo,veh_servo;
@@ -60,11 +64,9 @@ int buzzer=12;
 // MAX7219 object
 LedControl lc=LedControl(4,3,2,1);  // data_in,clk,load,no_of_ic
 
-// delay for ic
-unsigned long delaytime=250;
-
 void setup() {
     Serial.begin(9600);
+    digitalWrite(veh_led_green,1);
 
     // servo connections
     inner_servo.attach(5);
@@ -84,8 +86,8 @@ void setup() {
     }
     
     // setting input from pi
-    pinMode(ped_input, INPUT_PULLUP);
-    pinMode(em_input, INPUT_PULLUP);
+    pinMode(ped_input, INPUT);
+    pinMode(em_input, INPUT);
 
     // The MAX72XX is in power-saving mode on startup,
     // we have to do a wakeup call
@@ -94,7 +96,7 @@ void setup() {
     lc.setIntensity(0,8);
     //and clear the display
     lc.clearDisplay(0);
-    delay(3000);
+    delay(1000);
 }
 
 
@@ -105,62 +107,72 @@ void loop()
     
     int ped_value=digitalRead(ped_input);
     int em_value=digitalRead(em_input);
-    if (ped_value==1)
-    {
-        ped_cross();
-    }
-    else if(em_value==1)
-    {
-        em_cross();
-    }
-    else
-    {
-        veh_cross();
-    }
+    Serial.println(ped_value);
+    Serial.println(em_value);
+//   	if (ped_value==1)
+//   	{
+//      Serial.println("ped_cross");
+//       ped_cross();
+//       
+//   	}
+//   	else if(em_value==1)
+//   	{
+//      Serial.println("em_cross");
+//       em_cross();
+//       
+//   	}
+//   	else if (em_value==0 && ped_value==0)
+//   	{
+//      Serial.println("veh_cross");
+//      veh_cross();
+//       
+//   	}
+em_cross();
+ped_cross();
+veh_cross();
+    delay(300);
 }
 
 void ped_cross()
 {
-    digitalWrite(veh_led_green,0);
-    digitalWrite(veh_led_red,1);
-    digitalWrite(ped_led_green,1);
-    digitalWrite(ped_led_red,0);
+    indicator_and_buzzer(0,1,1,0,0);
+
     // set the delay for the ped crossing
     for(int i=ped_delay;i>=0;i--)
     {
-        calculate_ped(i);
+        calculate_left_right(i);
+        data_write_display(l_seg,r_seg,0,0,1000);
     }
     
 }
 void em_cross()
 {
-    digitalWrite(veh_led_green,0);
-    digitalWrite(veh_led_red,1);
-    digitalWrite(ped_led_green,0);
-    digitalWrite(ped_led_red,1);
+    indicator_and_buzzer(0,1,0,1,1);
      // set the delay for the em_veh crossing
     for(int i=em_delay;i>=0;i--)
     {
-        calculate_em(i);
+        calculate_left_right(i);
+        data_write_display(0,0,0,0,1000);
     }
+
    
 }
 void veh_cross()
 {
-    digitalWrite(veh_led_green,1);
-    digitalWrite(veh_led_red,0);
-    digitalWrite(ped_led_green,0);
-    digitalWrite(ped_led_red,1);
+   indicator_and_buzzer(1,0,0,1,0);
      // set the delay for the veh crossing
     for(int i=veh_delay;i>=0;i--)
     {
-        calculate_veh(i);
+        calculate_left_right(i);
+        data_write_display(0,0,l_seg,r_seg,1000);
     }
+
 }
 
 
-void calculate_veh(int number)
+void calculate_left_right(int number)
 {
+  Serial.println(number);
     if (number<10)
     {
         l_seg=0;
@@ -171,220 +183,29 @@ void calculate_veh(int number)
       l_seg=number/10;
       r_seg=number % 10;   
     }
-    data_write_veh(l_seg,r_seg);
 
 }
 
-void calculate_em(int number)
+
+// Function for on/off the indicator and buzzer
+void indicator_and_buzzer(int vg,int vr,int pg,int pr,int bz)
 {
-    if (number<10)
-    {
-        l_seg=0;
-        r_seg=number;     
-    }
-    else
-    {
-      l_seg=number/10;
-      r_seg=number % 10;   
-    }
-    data_write_em(l_seg,r_seg); 
+	
+	digitalWrite(veh_led_green,vg);
+	digitalWrite(veh_led_red,vr);
+	digitalWrite(ped_led_green,pg);
+	digitalWrite(ped_led_red,pr);
+	digitalWrite(buzzer,bz);
+
 }
 
 
-void calculate_ped(int number)
+// Function to display delay in the seven segment display
+void data_write_display(int a, int b,int c,int d,int time_delay)
 {
-    if (number<10)
-    {
-        l_seg=0;
-        r_seg=number;     
-    }
-    else
-    {
-      l_seg=number/10;
-      r_seg=number % 10;   
-    }
-    data_write_ped(l_seg,r_seg);
-    
+    lc.setDigit(0,0,a,false);	// false for not including the dp
+	lc.setDigit(0,1,b,false);
+    lc.setDigit(0,2,c,false);
+    lc.setDigit(0,3,d,false);
+    delay(300);
 }
-
-
-void data_write_veh(int l_seg, int r_seg)
-{
-    
-    lc.setDigit(0,3,r_seg,false);
-    lc.setDigit(0,2,l_seg,false);
-    lc.setDigit(0,1,0,false);
-    lc.setDigit(0,0,0,false);
-    delay(1000);
-}
-
-void data_write_ped(int l_seg, int r_seg)
-{
-    lc.setDigit(0,3,0,false);
-    lc.setDigit(0,2,0,false);
-    lc.setDigit(0,1,r_seg,false);
-    lc.setDigit(0,0,l_seg,false);
-    delay(1000);   
-}
-
-
-void data_write_em(int l_seg, int r_seg)
-{
-    lc.setDigit(0,3,0,false);
-    lc.setDigit(0,2,0,false);
-    lc.setDigit(0,1,0,false);
-    lc.setDigit(0,0,0,false);
-    delay(1000); 
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//int veh_led_green=A2;
-//int ped_led_red=A3;
-//
-//void calculate_veh(int);
-//void data_write_veh(int,int);
-//void calculate_ped(int);
-//void data_write_ped(int);
-//
-//
-//// Binary value for 0 to 9
-//int BCD[10][4] ={
-//{0,0,0,0},
-//{0,0,0,1},
-//{0,0,1,0},
-//{0,0,1,1},
-//{0,1,0,0},
-//{0,1,0,1},
-//{0,1,1,0},
-//{0,1,1,1},
-//{1,0,0,0},
-//{1,0,0,1}}; //BCD code
-//
-//
-//void setup()
-//{
-// Serial.begin(9600) ;
-// for(int i=0;i<4;i++)
-//    {
-//    pinMode(l_segment[i],OUTPUT);
-//    pinMode(r_segment[i],OUTPUT);
-//    pinMode(ped_segment[i],OUTPUT);
-//    }
-//    
-//}
-//
-//
-//void loop()
-//{
-//    analogWrite(veh_led_green,255);
-//    analogWrite(ped_led_red,0);
-//    for(number=15;number>=0;number--)
-//    {
-//        Serial.println(number);
-//        calculate_veh(number);
-//        delay(1000);
-//    }
-//
-//    analogWrite(veh_led_green,0);
-//    analogWrite(ped_led_red,255);
-//    for(number=9;number>=0;number--)
-//    {
-//        Serial.println(number);
-//        calculate_ped(number);
-//        delay(1000);
-//    }
-//}
-//
-//void calculate_veh(int number)
-//{
-//
-//    if (number<10)
-//    {
-//        l_seg=0;
-//        r_seg=number;
-//        
-//    }
-//    else
-//    {
-//      l_seg=number/10;
-//        r_seg=number % 10;
-//        
-//    }
-//    Serial.println(l_seg);
-//    Serial.println(r_seg);
-//    data_write_veh(l_seg,r_seg);
-//
-//}
-//void calculate_ped(int number)
-//{
-//
-//    if (number<10)
-//    {
-//        l_seg=0;
-//        r_seg=number;
-//        
-//    }
-//    else
-//    {
-//      l_seg=number/10;
-//        r_seg=number % 10;
-//        
-//    }
-//    Serial.println(l_seg);
-//    Serial.println(r_seg);
-//    data_write_ped(r_seg);
-//
-//}
-//
-//void data_write_veh(int l_seg,int r_seg)
-//{
-//
-//
-//     for (int j=0; j < 4; j++) 
-//    {
-//        digitalWrite(l_segment[j], BCD[l_seg][j]);
-//    }
-// 
-//    for (int j=0; j < 4; j++) 
-//    {
-//        digitalWrite(r_segment[j], BCD[r_seg][j]);
-//    }
-//  
-//}
-//
-//
-//void data_write_ped(int r_seg)
-//{
-//
-//
-//     for (int j=0; j < 4; j++) 
-//    {
-//        digitalWrite(ped_segment[j], BCD[r_seg][j]);
-//    }
-//
-//  
-//}
