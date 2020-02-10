@@ -1,23 +1,22 @@
-// Adding interrupt on the 2 and 3
 /*
 Using MAX7219
 	input from pi
         ped_input=2;
         em_input=3;
-    pin A0 is connected to LOAD
-    pin A1 is connected to the CLK
-    pin 4 is connected to the DataIn    
+    pin 4 is connected to LOAD
+    pin 5 is connected to the CLK
+    pin 6 is connected to the DataIn    
     servo connections 
-        inner_servo=5
-        outer_servo=6
-        veh_servo=7
+        inner_servo=7
+        outer_servo=8
+        veh_servo=9
     led
-        veh_led_green=8;
-        veh_led_red=9;
-        ped_led_green=10;
-        ped_led_red=11;
+        veh_led_green=10;
+        veh_led_red=11;
+        ped_led_green=12;
+        ped_led_red=13;
     buzzer
-        buzzer=12;
+        buzzer=A0;
     
         
 */
@@ -40,9 +39,9 @@ void veh_cross();
 // Function for calculate left and right value of a number
 void calculate_left_right(int);
 
-// turning the indicator light and buzzer
-// veh_g,veh_r,ped_g,ped_r,buzzer
-void indicator_and_buzzer(int,int,int,int,int);
+// turning the indicator light and buzzer and servo
+// veh_g,veh_r,ped_g,ped_r,buzzer,inner_servo,outer_servo,veh_servo
+void indicator_and_buzzer(int,int,int,int,int,int,int,int);
 
 // writing to the 4 seven segment
 void data_write_display(int,int,int,int,int);
@@ -51,50 +50,46 @@ void data_write_display(int,int,int,int,int);
 Servo inner_servo,outer_servo,veh_servo;
 
 // input from raspberry pi
-int ped_input=A0;
-int em_input=A1;
+int ped_input=2;
+int em_input=3;
 
 // led
-int veh_led_green=8;
-int veh_led_red=9;
-int ped_led_green=10;
-int ped_led_red=11;
+int veh_led_green=10;
+int veh_led_red=11;
+int ped_led_green=12;
+int ped_led_red=13;
 
 // buzzer
-int buzzer=12;
+int buzzer=A0;
 
 // MAX7219 object
-LedControl lc=LedControl(4,A1,A0,1);  // data_in,clk,load,no_of_ic
+LedControl lc=LedControl(6,5,4,1);  // data_in,clk,load,no_of_ic
 
 void setup() {
     Serial.begin(9600);
-    // Declaring interrupt
+    // Adding interrupt on the 2 and 3
 	pinMode(ped_input,INPUT);
 	pinMode(em_input,INPUT);
 	// adding the interrupt function when interrupt has occured
 	attachInterrupt(0,ped_cross,RISING);
-	attachInterrupt(0,em_cross,RISING);
+	attachInterrupt(1,em_cross,RISING);
 
     // servo connections
-    inner_servo.attach(5);
-    outer_servo.attach(6);
-    veh_servo.attach(7);
+    inner_servo.attach(7);
+    outer_servo.attach(8);
+    veh_servo.attach(9);
     
     // making gate in down position
     inner_servo.write(0);
     outer_servo.write(0);
     veh_servo.write(0);
     // setting led and buzzer as output
-    for(int i=8;i<=12;i++)
+    for(int i=10;i<=12;i++)
     {
         pinMode(i, OUTPUT);
     }
+    pinMode(buzzer,OUTPUT);
     
-    // setting input from pi
-    // initially the pin will be high always...
-    pinMode(ped_input, INPUT_PULLUP);
-    pinMode(em_input, INPUT_PULLUP);
-
     // The MAX72XX is in power-saving mode on startup,
     // we have to do a wakeup call
     lc.shutdown(0,false);
@@ -111,34 +106,14 @@ void setup() {
 void loop() 
 {
     
-    int ped_value=digitalRead(ped_input);
-    int em_value=digitalRead(em_input);
-    Serial.println(ped_value);
-    Serial.println(em_value);
-  	if (ped_value==0)
-  	{
-     Serial.println("ped_cross");
-      ped_cross();
-      
-  	}
-  	else if(em_value==0)
-  	{
-     Serial.println("em_cross");
-      em_cross();
-      
-  	}
-  	else if (em_value==1 && ped_value==1)
-  	{
-     Serial.println("veh_cross");
-     veh_cross();
-      
-  	}
+    Serial.println("veh_cross");
+    veh_cross();
     delay(300);
 }
 
 void ped_cross()
 {
-    indicator_and_buzzer(0,1,1,0,0);
+    indicator_and_buzzer(0,1,1,0,0,0,0,90);
 
     // set the delay for the ped crossing
     for(int i=ped_delay;i>=0;i--)
@@ -150,7 +125,7 @@ void ped_cross()
 }
 void em_cross()
 {
-    indicator_and_buzzer(0,1,0,1,1);
+    indicator_and_buzzer(0,1,0,1,1,90,90,90);
      // set the delay for the em_veh crossing
     for(int i=em_delay;i>=0;i--)
     {
@@ -162,7 +137,7 @@ void em_cross()
 }
 void veh_cross()
 {
-   indicator_and_buzzer(1,0,0,1,0);
+   indicator_and_buzzer(1,0,0,1,0,0,0,90);
      // set the delay for the veh crossing
     for(int i=veh_delay;i>=0;i--)
     {
@@ -191,7 +166,7 @@ void calculate_left_right(int number)
 
 
 // Function for on/off the indicator and buzzer
-void indicator_and_buzzer(int vg,int vr,int pg,int pr,int bz)
+void indicator_and_buzzer(int vg,int vr,int pg,int pr,int bz,int is,int os, int vs)
 {
 	
 	digitalWrite(veh_led_green,vg);
@@ -199,6 +174,9 @@ void indicator_and_buzzer(int vg,int vr,int pg,int pr,int bz)
 	digitalWrite(ped_led_green,pg);
 	digitalWrite(ped_led_red,pr);
 	digitalWrite(buzzer,bz);
+	inner_servo.write(is);
+	outer_servo.write(os);
+	veh_servo.write(vs);
 
 }
 
