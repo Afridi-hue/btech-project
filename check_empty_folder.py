@@ -1,5 +1,5 @@
 import os
-# list all main folder anad avoid the git folder
+# list all main folder and avoid the git folder
 main_folder=[i for i in os.listdir() if os.path.isdir(i) and i!=".git"]
 
 for a in main_folder:
