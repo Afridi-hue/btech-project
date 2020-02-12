@@ -1,10 +1,10 @@
-
+// connect arduino rst to gnd
 #include <ESP8266WiFi.h>                                                    // esp8266 library
 #include <FirebaseArduino.h>                                                // firebase library
 #define FIREBASE_HOST "logdata-pc.firebaseio.com"                         // the project name address from firebase id
 
-#define WIFI_SSID "kunjuzzz"                                             // input your home or public wifi name 
-#define WIFI_PASSWORD "kunjuzzz"                                    //password of wifi ssid
+#define WIFI_SSID "pp"                                             // input your home or public wifi name 
+#define WIFI_PASSWORD "aaaaaaaa"                                    //password of wifi ssid
                                                      
 void setup() {
   Serial.begin(9600);
