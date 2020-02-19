@@ -25,13 +25,13 @@
 #include <Servo.h>
 
 // Variables
-ctions
+
 void ped_cross();int number, l_seg, r_seg;
 int ped_delay = 10;
 int veh_delay = 20;
 int em_delay = 30;
 
-// Fun
+// Functions
 void em_cross();
 void veh_cross();
 
